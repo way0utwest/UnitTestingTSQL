@@ -11,15 +11,25 @@ You are free to use this code inside of your own organization.
 USE TestingTSQL;
 GO
 
+
+SELECT top 10
+ *
+ FROM dbo.SalesOrderDetail
+ 
+DELETE dbo.SalesOrderDetail WHERE SalesOrderID = 2
+
+SELECT top 10
+ *
+ FROM dbo.SalesOrderDetail
+
+
+GO
+
 -- We want to ensure we have a known set of test data
 -- Set a table to 1 to reload
 DECLARE
     @SalesTax BIT = 0,
     @SalesOrderDetail BIT = 1;
-
-
-
-
 
 
 
@@ -213,3 +223,8 @@ IF @SalesTax = 1
         'WY', 0.014
     );
 GO
+
+
+
+
+
