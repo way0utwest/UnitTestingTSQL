@@ -24,8 +24,6 @@ GO
 
 -- examine the function.
 SELECT dbo.UF_CalcDiscountForSale(2);
-SELECT dbo.UF_CalcDiscountForSale(25);
-SELECT dbo.UF_CalcDiscountForSale(75);
 go
 
 
@@ -41,127 +39,91 @@ EXEC tsqlt.NewTestClass
 
 
 -- we could do this. Look at these 3 tests.
-CREATE OR ALTER PROCEDURE tSalesOrderDetail.[test Check Discount Calculation for qty 19 = 0%]
+CREATE PROCEDURE [tSalesOrderDetail].[test Check Discount Calculation for qty 19 = 0%]
 AS
-BEGIN
-    ---------------
-    -- Assemble
-    ---------------
-    DECLARE
-        @expected NUMERIC(10, 3) = 0.00,
-        @actual NUMERIC(10, 3);
+    BEGIN
+  -- Assemble
+        DECLARE @expected NUMERIC(10 ,3) = 0.00
+          , @actual NUMERIC(10 ,3);
 
-    ---------------
-    -- Act
-    ---------------
-    SELECT @actual = dbo.UF_CalcDiscountForSale(19);
-
-    ---------------
-    -- Assert    
-    ---------------
-    EXEC tSQLt.AssertEquals
-        @Expected = @expected,
-        @Actual   = @actual,
-        @Message  = N'An incorrect discount calculation occurred.';
-END;
+  -- act
+        SELECT  @actual = dbo.UF_CalcDiscountForSale(19);
+  -- assert    
+        EXEC tSQLt.AssertEquals @Expected = @expected ,@Actual = @actual ,
+            @Message = N'An incorrect discount calculation occurred.';
+  
+    END;
 GO
 
-CREATE OR ALTER PROCEDURE tSalesOrderDetail.[test Check Discount Calculation for qty 20 = 5%]
+CREATE PROCEDURE [tSalesOrderDetail].[test Check Discount Calculation for qty 20 = 5%]
 AS
-BEGIN
-    ---------------
-    -- Assemble
-    ---------------
-    DECLARE
-        @expected NUMERIC(10, 3) = 0.05,
-        @actual NUMERIC(10, 3);
+    BEGIN
+  -- Assemble
+        DECLARE @expected NUMERIC(10 ,3) = 0.05
+          , @actual NUMERIC(10 ,3);
 
-    ---------------
-    -- Act
-    ---------------
-    SELECT @actual = dbo.UF_CalcDiscountForSale(20);
-    ---------------
-    -- Assert    
-    ---------------
-
-    EXEC tSQLt.AssertEquals
-        @Expected = @expected,
-        @Actual = @actual,
-        @Message = N'An incorrect discount calculation occurred.';
-END;
+  -- act
+        SELECT  @actual = dbo.UF_CalcDiscountForSale(20);
+  -- assert    
+        EXEC tSQLt.AssertEquals @Expected = @expected ,@Actual = @actual ,
+            @Message = N'An incorrect discount calculation occurred.'
+  
+    END
 GO
-CREATE OR ALTER PROCEDURE tSalesOrderDetail.[test Check Discount Calculation for qty 50 = 7.5%]
+
+CREATE PROCEDURE [tSalesOrderDetail].[test Check Discount Calculation for qty 50 = 7.5%]
 AS
-BEGIN
-    ---------------
-    -- Assemble
-    ---------------
-    DECLARE
-        @expected NUMERIC(10, 3) = 0.075,
-        @actual NUMERIC(10, 3);
+    BEGIN
+  -- Assemble
+        DECLARE @expected NUMERIC(10 ,3) = 0.075
+          , @actual NUMERIC(10 ,3);
 
-    ---------------
-    -- Act
-    ---------------
-    SELECT @actual = dbo.UF_CalcDiscountForSale(50);
-
-    ---------------
-    -- Assert    
-    ---------------
-    EXEC tSQLt.AssertEquals
-        @Expected = @expected,
-        @Actual = @actual,
-        @Message = N'An incorrect discount calculation occurred.';
-END;
+  -- act
+        SELECT  @actual = dbo.UF_CalcDiscountForSale(50);
+  -- assert    
+        EXEC tSQLt.AssertEquals @Expected = @expected ,@Actual = @actual ,
+            @Message = N'An incorrect discount calculation occurred.'
+  
+    END
 GO
------------------------------------------------------------------------------
------------------------------------------------------------------------------
+
+
 -- We could continue to write other tests for different values and boudaries.
 -- However that's confusing and it results in a lot of tests for simple rules. 
 -- Let's simplify.
------------------------------------------------------------------------------
------------------------------------------------------------------------------
-CREATE OR ALTER PROCEDURE tSalesOrderDetail.[test Check Discount Calculation for qty rules]
+CREATE PROCEDURE [tSalesOrderDetail].[test Check Discount Calculation for qty rules]
 AS
-BEGIN
-    ---------------
-    -- Assemble
-    ---------------
-    CREATE TABLE #expected
-    (   qty      INT,
-        discount NUMERIC(10, 3)
-    );
-    INSERT #expected
-    ( qty, discount)
-    VALUES
-    ( 19, 0.0  ),
-    ( 20, 0.05 ),
-    ( 49, 0.05 ),
-    ( 50, 0.075),
-    ( 99, 0.075),
-    (100, 0.1  );
+    BEGIN
+  -- Assemble
+  CREATE table #expected (qty INT, discount NUMERIC(10 ,3));
 
-    SELECT TOP (0) qty, discount INTO #actual FROM #expected;
+  INSERT #expected
+          ( qty ,discount )
+  VALUES  ( 19 ,0.0 )
+        , ( 20 ,0.05 )
+        , ( 49 ,0.05 )
+        , ( 50 ,0.075 )
+        , ( 99 ,0.075 )
+        , ( 100 ,0.1 )
 
-    ---------------
-    -- Act
-    ---------------
-    INSERT #actual SELECT 19, dbo.UF_CalcDiscountForSale(19);
-    INSERT #actual SELECT 20, dbo.UF_CalcDiscountForSale(20);
-    INSERT #actual SELECT 49, dbo.UF_CalcDiscountForSale(49);
-    INSERT #actual SELECT 50, dbo.UF_CalcDiscountForSale(50);
-    INSERT #actual SELECT 99, dbo.UF_CalcDiscountForSale(99);
-    INSERT #actual SELECT 100, dbo.UF_CalcDiscountForSale(100);
+  SELECT TOP(0) *
+   INTO #actual
+   FROM #expected
 
-    ---------------
-    -- Assert    
-    ---------------
-    EXEC tSQLt.AssertEqualsTable
-        @Expected = N'#expected',
-        @Actual = N'#actual',
-        @FailMsg = N'The discount calculations are incorrect';
-END;
+  -- act
+  INSERT #actual SELECT 19, dbo.UF_CalcDiscountForSale(19);
+  INSERT #actual SELECT 20, dbo.UF_CalcDiscountForSale(20);
+  INSERT #actual SELECT 49, dbo.UF_CalcDiscountForSale(49);
+  INSERT #actual SELECT 50, dbo.UF_CalcDiscountForSale(50);
+  INSERT #actual SELECT 99, dbo.UF_CalcDiscountForSale(99);
+  INSERT #actual SELECT 100, dbo.UF_CalcDiscountForSale(100);
+
+ -- assert    
+        EXEC tSQLt.AssertEqualsTable @Expected = N'#expected' ,@Actual = N'#actual' ,@FailMsg = N'The discount calculations are incorrect'
+  
+    END
 GO
+
 
 EXEC tsqlt.run '[tSalesOrderDetail].[test Check Discount Calculation for qty rules]';
 GO
@@ -174,7 +136,10 @@ GO
 -- Let's refactor the procedure
 -- Set the boundaries carefully
 -- look at results
-CREATE OR ALTER FUNCTION dbo.UF_CalcDiscountForSale ( @QtyPurchased INT )
+IF OBJECT_ID('dbo.UF_CalcDiscountForSale') IS NOT NULL
+    DROP FUNCTION dbo.UF_CalcDiscountForSale;
+GO
+CREATE FUNCTION dbo.UF_CalcDiscountForSale ( @QtyPurchased INT )
 RETURNS NUMERIC(10 ,3)
 /*
 -- Test Code

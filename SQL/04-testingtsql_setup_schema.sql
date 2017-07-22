@@ -732,7 +732,7 @@ AS
     BEGIN
         DECLARE @i NUMERIC(10,3);
 
-        SELECT  @i = CASE WHEN ( @QtyPurchased > 50 ) THEN 0.075
+        SELECT  @i = CASE WHEN ( @QtyPurchased > 101 ) THEN 0.1
                           WHEN ( @QtyPurchased > 20 ) AND (@QtyPurchased < 100)
                                THEN 0.05
                           ELSE 0.0
@@ -962,51 +962,4 @@ BEGIN
 END;
 GO
 
-GO
-CREATE PROCEDURE dbo.GetArticleHeadlines
-AS
-BEGIN
-SELECT TOP 5
-    ci.ContentItemID
-   ,ci.Title
-   ,ci.ExternalURL
-  FROM
-    dbo.ContentItems AS ci
-END
-go
--- Add Data
-INSERT dbo.Tags (TagText, Status) VALUES (N'Azure', 0), (N'Power BI', 1),  (N'T-SQL', 1)
-INSERT dbo.FileBlobs (Data) VALUES (0x00) 
-go
-INSERT dbo.ContentItems
-(   PrimaryTagID, Title, ShortTitle, Description, Text, ExternalURL, PublishingStatus, SourceID, ForumThreadID,
-    UpdatesContentItemID, CreatedDate, LastModifiedDate, DollarValue, IconFileID, DisplayStyle, PopularityRank, EstimateofReadingTime
-) 
-VALUES
-( 3, 'Stairway to Advanced T-SQL Level 8: Functions to Generate Date and Time values', '', 'When you build applications that store records in SQL Server you will most likely have to store date and time values as part of the data. To manage all the different date related tasks you might need to perform Microsoft has introduced a number of date functions. In this stairway I will be exploring those date and time functions. ',
-    ' When you build applications that store records in SQL Server you will most likely have to store date and time values as part of the data. To manage all the different date related tasks you might need to perform Microsoft has introduced a number of date functions. In this stairway I will be exploring those date and time functions.
-High precision System Date/Time Functions
-
-SQL Server 2014 introduces a number of high precision data/time functions. By "high precision" I mean the time portion of a date/time has an accurate of 100 nanoseconds. Datatypes that included time values that were available in previous versions have much less accuracy and precision.
-
-The first high precision date/time function is SYSDATETIME. This function returns the system date and time for the computer that is running SQL Server. The value returned is a datetime2 data type with a precision of 7. The code in Listing 1 shows how to call this function',
-    'http://www.sqlservercentral.com/articles/Stairway+Series/132875/', 2, 1, 500, 0, GETDATE(), GETDATE(), 50.0, 1, 0, 0.0, '12:00')
-, (1, 'Azure DWH part 11: Data Warehouse Migration Utility ', '', 'There is a new utility to import data from SQL Server on premises or Azure SQL to Azure SQL Data Warehouse (ASDW)',
-    'Introduction
-     In this new chapter, we will use the new utility named Data Warehouse Migration Utility. This is a new tool created to migrate data from SQL Server on premises and Azure SQL to ASDW. ',
-    'http://www.sqlservercentral.com/articles/Azure+SQL+Data+Warehouse+(ASDW)/158311/', 2, 1, 501, 0, GETDATE(), GETDATE(), 100.0, 1, 0, 0.0, '6:00')
-, (2, 'Power BI - Rename Table Column headings ', '', 'Trick to rename column headings on a Power BI Table visual ',
-    ' After working with Power BI for a few days, I got stumped when attempting to edit the Column Headings on a Table Visual.  The internet advised me … there are currently no options to change column header names for a Table/Matrix visual. It appears lots of people would like to see this functionality added.
-
-So while we wait (and hope) for the feature to be added … here is one idea for a “work around”! ',
-    'http://www.sqlservercentral.com/articles/Power+BI/155499/', 2, 1, 502, 0, GETDATE(), GETDATE(), 50.0, 1, 0, 0.0, '5:00')
-, (2, 'Batch SSIS pkg execution from Business Intelligence Development Studio ', '', 'The Execute Package Task and a second instance of Business Intelligence Development Studio can be a satisfactory method of background execution of SSIS packages in batch mode when you don''t have access to Integration Services',
-    'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet.',
-    'http://www.sqlservercentral.com/articles/Power+BI/155500/', 2, 1, 502, 0, GETDATE(), GETDATE(), 50.0, 1, 0, 0.0, '5:00')
-, (2, 'The Panjandrum Conundrum ', '', 'With progress thwarted by a committee of panjandrums, will T-SQL forever remain in the doldrums? So wonders Phil Factor.',
-    'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet.',
-    'http://www.sqlservercentral.com/articles/Power+BI/155498/', 2, 1, 502, 0, GETDATE(), GETDATE(), 50.0, 1, 0, 0.0, '5:00')
-, (2, 'What You Need To Know About DR Testing ', '', 'Practice makes perfect. That’s true of everything, including disaster recovery. If you aren’t already testing your DR plan, you should be - here’s what you need to know to get started. ',
-    'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet.',
-    'http://www.sqlservercentral.com/articles/Power+BI/155497/', 2, 1, 502, 0, GETDATE(), GETDATE(), 50.0, 1, 0, 0.0, '5:00')
 GO

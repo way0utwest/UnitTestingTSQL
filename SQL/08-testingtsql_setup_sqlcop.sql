@@ -174,10 +174,10 @@ BEGIN
 	From	Information_Schema.tables 
     WHERE	Table_Type = 'Base Table'
        	And Table_Name Like 'tbl%'
-		
+
 	If @Output > '' 
 		Begin
-			Set @Output = @output + CHAR(13) + Char(10) 
+			Set @Output = Char(13) + Char(10) 
 						  + 'For more information:  '
 						  + 'http://blogs.lessthandot.com/index.php/DataMgmt/DBProgramming/MSSQLServer/don-t-prefix-your-table-names-with-tbl/' 
 						  + Char(13) + Char(10) 
