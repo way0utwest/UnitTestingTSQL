@@ -77,7 +77,7 @@ CREATE TABLE [dbo].[ContentItems]
 [IconFileID] [int] NULL,
 [DisplayStyle] [int] NOT NULL CONSTRAINT [DF_ContentItems_DisplayStyle1] DEFAULT ((0)),
 [PopularityRank] [float] NOT NULL CONSTRAINT [DF__ContentIt__Popul__5F7E2DAC1] DEFAULT ((0)),
-[EstimateofReadingTime] [time] NOT NULL
+[EstimateofReadingTime] [time] NULL
 )
 GO
 
@@ -89,6 +89,7 @@ ALTER TABLE [dbo].[ContentItems] ADD CONSTRAINT [PK_ContentItems] PRIMARY KEY CL
 GO
 IF @@ERROR <> 0 SET NOEXEC ON
 GO
+
 PRINT N'Creating [dbo].[Articles]'
 GO
 CREATE TABLE [dbo].[Articles]
@@ -961,5 +962,154 @@ BEGIN
    WHERE O.SalesOrderDetailID = @OrderId;    
 END;
 GO
-
 GO
+-------------------------------------------------------
+-------------------------------------------------------
+--------  Data
+-------------------------------------------------------
+-------------------------------------------------------
+PRINT 'Adding Tags'
+GO
+INSERT dbo.Tags
+(
+    TagText,
+    Status
+)
+VALUES
+(N'Sample Tag', 1)
+, (N'SQL Server', 1)
+GO
+PRINT 'Adding ContentItems'
+GO
+INSERT dbo.ContentItems
+(
+    PrimaryTagID,
+    Title,
+    ShortTitle,
+    Description,
+    Text,
+    ExternalURL,
+    PublishingStatus,
+    SourceID,
+    ForumThreadID,
+    UpdatesContentItemID,
+    CreatedDate,
+    LastModifiedDate,
+    DollarValue,
+    IconFileID,
+    DisplayStyle,
+    PopularityRank,
+    EstimateofReadingTime
+)
+VALUES
+(   1,         -- PrimaryTagID - int
+    'Test Title 1',        -- Title - varchar(200)
+    'Test Short Title 1',        -- ShortTitle - varchar(200)
+    'This is an article',        -- Description - varchar(3500)
+    'lorem ipsum and more',        -- Text - text
+    'http://someurl.com/1',        -- ExternalURL - varchar(250)
+    0,         -- PublishingStatus - int
+    0,         -- SourceID - int
+    0,         -- ForumThreadID - int
+    0,         -- UpdatesContentItemID - int
+    GETDATE(), -- CreatedDate - datetime
+    GETDATE(), -- LastModifiedDate - datetime
+    0.0,       -- DollarValue - float
+    null,         -- IconFileID - int
+    0,         -- DisplayStyle - int
+    0.0,       -- PopularityRank - float
+    null       -- EstimateofReadingTime - time(7)
+)
+, (   1,         -- PrimaryTagID - int
+    'Test Title 2',        -- Title - varchar(200)
+    'Test Short Title 2',        -- ShortTitle - varchar(200)
+    'This is an article',        -- Description - varchar(3500)
+    'lorem ipsum and more',        -- Text - text
+    'http://someurl.com/2',        -- ExternalURL - varchar(250)
+    0,         -- PublishingStatus - int
+    0,         -- SourceID - int
+    0,         -- ForumThreadID - int
+    0,         -- UpdatesContentItemID - int
+    GETDATE(), -- CreatedDate - datetime
+    GETDATE(), -- LastModifiedDate - datetime
+    0.0,       -- DollarValue - float
+    null,         -- IconFileID - int
+    0,         -- DisplayStyle - int
+    0.0,       -- PopularityRank - float
+    null      -- EstimateofReadingTime - time(7)
+)
+, (   1,         -- PrimaryTagID - int
+    'Test Title 3',        -- Title - varchar(200)
+    'Test Short Title 3',        -- ShortTitle - varchar(200)
+    'This is an article',        -- Description - varchar(3500)
+    'lorem ipsum and more',        -- Text - text
+    'http://someurl.com/3',        -- ExternalURL - varchar(250)
+    0,         -- PublishingStatus - int
+    0,         -- SourceID - int
+    0,         -- ForumThreadID - int
+    0,         -- UpdatesContentItemID - int
+    GETDATE(), -- CreatedDate - datetime
+    GETDATE(), -- LastModifiedDate - datetime
+    0.0,       -- DollarValue - float
+    null,         -- IconFileID - int
+    0,         -- DisplayStyle - int
+    0.0,       -- PopularityRank - float
+    null       -- EstimateofReadingTime - time(7)
+)
+, (   1,         -- PrimaryTagID - int
+    'Test Title 4',        -- Title - varchar(200)
+    'Test Short Title 4',        -- ShortTitle - varchar(200)
+    'This is an article',        -- Description - varchar(3500)
+    'lorem ipsum and more',        -- Text - text
+    'http://someurl.com/4',        -- ExternalURL - varchar(250)
+    0,         -- PublishingStatus - int
+    0,         -- SourceID - int
+    0,         -- ForumThreadID - int
+    0,         -- UpdatesContentItemID - int
+    GETDATE(), -- CreatedDate - datetime
+    GETDATE(), -- LastModifiedDate - datetime
+    0.0,       -- DollarValue - float
+    null,         -- IconFileID - int
+    0,         -- DisplayStyle - int
+    0.0,       -- PopularityRank - float
+    null       -- EstimateofReadingTime - time(7)
+)
+, (   1,         -- PrimaryTagID - int
+    'Test Title 5',        -- Title - varchar(200)
+    'Test Short Title 5',        -- ShortTitle - varchar(200)
+    'This is an article',        -- Description - varchar(3500)
+    'lorem ipsum and more',        -- Text - text
+    'http://someurl.com/5',        -- ExternalURL - varchar(250)
+    0,         -- PublishingStatus - int
+    0,         -- SourceID - int
+    0,         -- ForumThreadID - int
+    0,         -- UpdatesContentItemID - int
+    GETDATE(), -- CreatedDate - datetime
+    GETDATE(), -- LastModifiedDate - datetime
+    0.0,       -- DollarValue - float
+    null,         -- IconFileID - int
+    0,         -- DisplayStyle - int
+    0.0,       -- PopularityRank - float
+    null       -- EstimateofReadingTime - time(7)
+)
+GO
+PRINT 'Adding Content Performance Records'
+GO
+INSERT dbo.ContentPerformanceRecord
+(
+    ContentItemID,
+    Day,
+    CountOfViews,
+    TotalRatings,
+    AverageRating,
+    ViewsLastNDays,
+    TotalViews
+)
+VALUES
+  (1, 2, 1, 1, 5, 0, 0)
+, (2, 2, 2, 1, 5, 0, 0)
+, (3, 3, 3, 1, 5, 0, 0)
+, (4, 4, 4, 1, 5, 0, 0)
+, (5, 5, 5, 1, 5, 0, 0)
+
+

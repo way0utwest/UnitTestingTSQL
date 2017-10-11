@@ -10,12 +10,21 @@ You are free to use this code inside of your own organization.
 */
 USE [TestingTSQL]
 GO
+SELECT * FROM dbo.SalesOrderDetail
+SELECT * FROM dbo.Salestax
+GO
+
 
 -- We want to ensure we have a known set of test data
 TRUNCATE TABLE dbo.SalesOrderDetail
 TRUNCATE TABLE dbo.Salestax
 -- ...
 GO
+/*
+bulk insert dbo.SalesOrderDetail from 'c:\Users\way0u\Source\Repos\UnitTestingTSQL\SQL\SalesOrderDetail.txt'
+bulk insert dbo.SalesTax from 'c:\Users\way0u\Source\Repos\UnitTestingTSQL\SQL\Salestax.txt'
+
+*/
 INSERT INTO dbo.SalesOrderDetail
 ( SalesOrderID, SalesOrderDetailID, OrderQuantity, ProductID, UnitPrice, DiscountPercent, LineTotal, TaxAmount, ShippingState)
 VALUES  ( 1, 1, 10, 2, 10, 0.0, 100, 2, 'PA')

@@ -9,9 +9,37 @@ or redistributed by anyone without permission.
 You are free to use this code inside of your own organization.
 */
 
--- We want to add a new table.
+-- Standards
 USE [TestingTSQL]
 GO
+
+-- First, test
+-- check our database for current quality
+EXEC tsqlt.run '[SQLCop]';
+go
+
+
+
+
+-- add a proc
+CREATE PROCEDURE sp_test AS SELECT 1
+GO
+
+EXEC tsqlt.RunTestClass @TestClassName = N'SQLCOP' -- nvarchar(max)
+GO
+
+EXEC sp_rename 'sp_test', 'spTest'
+
+GO
+EXEC tsqlt.RunTestClass @TestClassName = N'SQLCOP' -- nvarchar(max)
+GO
+
+
+
+
+
+
+
 
 
 -- check our database for current quality
@@ -69,6 +97,12 @@ GO
 
 
 -- We have a failure.
+-- This a test ensuring we always have a PK.
+
+
+
+
+
 
 
 -- However, we don't want a primary key here. This is a staging table that we want to load
@@ -106,20 +140,26 @@ SELECT AllTables.name
                     COALESCE( e. value, 0) AS 'PKException'
           FROM      sys.objects o
                     INNER JOIN sys.schemas s ON s. schema_id = o.schema_id
+----------------------------------
+---- New Code --------------------
+----------------------------------
                     LEFT OUTER JOIN sys.extended_properties e ON o.object_id = e .major_id
                                                               AND e.value = 1
                                                               AND e.class_desc = 'OBJECT_OR_COLUMN'
                                                               AND e.name = 'PKException'
+----------------------------------
+---- New Code --------------------
+----------------------------------
           WHERE     o.type = 'U'
                     AND s.name <> 'tsqlt'
         ) AS AllTables
         LEFT JOIN ( SELECT  parent_object_id
-                    FROM    sys. objects
+                    FROM    sys.objects
                     WHERE   type = 'PK'
-                  ) AS PrimaryKeys ON AllTables .id = PrimaryKeys. parent_object_id
-WHERE    PrimaryKeys. parent_object_id IS NULL
-        AND AllTables .PKException = 0
-ORDER BY AllTables. name;
+                  ) AS PrimaryKeys ON AllTables.id = PrimaryKeys.parent_object_id
+WHERE    PrimaryKeys.parent_object_id IS NULL
+        AND AllTables.PKException = 0
+ORDER BY AllTables.name;
 
 -- assert
 EXEC tsqlt.AssertEmptyTable @TableName = N'#actual', -- nvarchar(max)
@@ -163,36 +203,21 @@ GO
 
 
 
-/*
--- change again if wanted
+
+-- fix
 EXEC sys.sp_updateextendedproperty
   @name = 'PKException'
 , @value = 1
-, -- sql_variant
-  @level0type = 'schema'
-, -- varchar(128)
-  @level0name = 'dbo'
-, -- sysname
-  @level1type = 'table'
-, -- varchar(128)
-  @level1name = 'ContentItems_Staging' -- sysname
+, @level0type = 'schema'
+, @level0name = 'dbo'
+, @level1type = 'table'
+, @level1name = 'ContentItems_Staging' -- sysname
   ;
 GO
 
-*/
+
 
 -- drop table [SalesHeader_Staging]
-
-
-
-
-
-
-
-
--- optional
--- add a proc
-CREATE PROCEDURE sp_test AS SELECT 1
 
 
 

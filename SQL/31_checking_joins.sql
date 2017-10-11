@@ -29,15 +29,20 @@ SELECT TOP 5
     dbo.ContentItems AS ci
   INNER JOIN dbo.ContentPerformanceRecord AS cpr
   ON
-    cpr.ContentItemID = ci.ContentItemID; 
+    cpr.ContentItemID = ci.ContentItemID
+ORDER BY ci.ContentItemID desc
+
 END
 go
 
 
 
-
-
 -- this returns current headlines.
+EXEC dbo.GetArticleHeadlines;
+
+
+
+
 -- build a test
 EXEC tsqlt.NewTestClass
   @ClassName = N'tContentTests';
@@ -121,73 +126,34 @@ GO
 
 
 
+-- We get a bug report
+-- Some headlines don't appear.
+-- Check
+SELECT * FROM dbo.ContentItems ORDER BY ContentItemID desc
+EXEC dbo.GetArticleHeadlines;
 
--- however, not all content items have ratings
--- if needed: DELETE dbo.ContentPerformanceRecord WHERE ContentItemID > 10
-SELECT
+-- Hmmmm
+
+
+
+
+
+
+
+-- While debugging, we realize in production, 
+-- not all content items have ratings
+-- if needed: DELETE dbo.ContentPerformanceRecord WHERE ContentItemID > 5
+SELECT TOP 5
     ci.ContentItemID
   , cpr.ContentItemID
   FROM
     dbo.ContentItems AS ci
   LEFT OUTER JOIN dbo.ContentPerformanceRecord AS cpr
   ON
-    cpr.ContentItemID = ci.ContentItemID;
+    cpr.ContentItemID = ci.ContentItemID
+	ORDER BY ci.ContentItemID desc;
 
 GO
-
-
-
-
-
--- let's change the procedure
--- Add LOJ and ISNULL items
-ALTER PROCEDURE dbo.GetArticleHeadlines
-AS
-BEGIN
-SELECT TOP 5
-    ci.ContentItemID
-   ,ci.Title
-   ,ci.ExternalURL
-  , AverageRating = ISNULL(cpr.AverageRating,'0')
-   ,ViewsLastNDays = ISNULL(cpr.ViewsLastNDays,'0')
-   ,TotalViews =ISNULL(cpr.TotalViews,'0')
-  FROM
-    dbo.ContentItems AS ci
-  LEFT OUTER JOIN dbo.ContentPerformanceRecord AS cpr
-  ON
-    cpr.ContentItemID = ci.ContentItemID; 
-END
-go
-
-
--- check
-EXEC dbo.GetArticleHeadlines;
-go
-
-
-
-
--- seems to work
--- let's test
--- test
-EXEC tsqlt.run '[tContentTests].[test GetArticleHeadlines for headlines and ratings, and views]';
-GO
-
-
-
-
-
-
-
-
--- failure. We can see that changing joins is an issue.
-
-
-
-
-
-
-
 
 -- alter the test
 -- all we need to change is our Expected table
@@ -217,9 +183,9 @@ EXEC tsqlt.FakeTable
 
 INSERT dbo.ContentPerformanceRecord (ContentItemID, AverageRating, ViewsLastNDays, TotalViews)
  VALUES
- (1, 4.0, 10, 20 )
-,(2, 5.2, 20, 40 )
-,(3, 6.5, 40, 80 )
+ (9, 4.0, 10, 20 )
+,(10, 5.2, 20, 40 )
+,(11, 6.5, 40, 80 )
 
 CREATE TABLE #expected 
 ( ContentItemID INT
@@ -231,11 +197,11 @@ CREATE TABLE #expected
 )
 INSERT #expected
  VALUES
- ( 1, 'Test 1', 'http://someurl.com/1/', 4.0, 10, 20 )
-,( 2, 'Test 2', 'http://someurl.com/2/', 5.2, 20, 40 )
-,( 3, 'Test 3', 'http://someurl.com/3/', 6.5, 40, 80 )
-, (4, 'Test 4', 'http://someurl.com/4/', 0, 0, 0)
-, (5, 'Test 5', 'http://someurl.com/5/', 0, 0, 0)
+ ( 9, 'Test 9', 'http://someurl.com/9/', 4.0, 10, 20 )
+,( 10, 'Test 10', 'http://someurl.com/10/', 5.2, 20, 40 )
+,( 11, 'Test 11', 'http://someurl.com/11/', 6.5, 40, 80 )
+, (8, 'Test 8', 'http://someurl.com/8/', 0, 0, 0)
+, (7, 'Test 7', 'http://someurl.com/7/', 0, 0, 0)
 
 SELECT *
  INTO #actual
@@ -255,16 +221,46 @@ EXEC tsqlt.AssertEqualsTable
 END
 GO
 
-
-
-
-
-
--- test
+-- Let's test
 EXEC tsqlt.run '[tContentTests].[test GetArticleHeadlines for headlines and ratings, and views]';
 GO
 
 
+
+-- let's change the procedure
+-- Add LOJ and ISNULL items
+ALTER PROCEDURE dbo.GetArticleHeadlines
+AS
+BEGIN
+SELECT TOP 5
+    ci.ContentItemID
+   ,ci.Title
+   ,ci.ExternalURL
+  , AverageRating = ISNULL(cpr.AverageRating,'0')
+   ,ViewsLastNDays = ISNULL(cpr.ViewsLastNDays,'0')
+   ,TotalViews =ISNULL(cpr.TotalViews,'0')
+  FROM
+    dbo.ContentItems AS ci
+  LEFT OUTER JOIN dbo.ContentPerformanceRecord AS cpr
+  ON
+    cpr.ContentItemID = ci.ContentItemID
+ORDER BY ci.ContentItemID desc; 
+END
+go
+
+
+-- check
+EXEC dbo.GetArticleHeadlines;
+go
+
+
+
+
+-- seems to work
+-- let's test
+-- test
+EXEC tsqlt.run '[tContentTests].[test GetArticleHeadlines for headlines and ratings, and views]';
+GO
 
 
 

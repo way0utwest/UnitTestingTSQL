@@ -9,12 +9,12 @@ or redistributed by anyone without permission.
 You are free to use this code inside of your own organization.
 */
 
--- We want to alter a table.
 USE [TestingTSQL]
 GO
 
 -- We have a function for discounts, UF_CalcDiscountForSale
--- Right now we have discounts of 5% and 10% based on quantity. however no one has every bought > 100.
+-- Right now we have discounts of 5% and 10% based on quantity. 
+-- However no one has every bought qty > 100.
 -- management wants to boost sales with new discounts. The rules are:
 --    Qty more than 20 and less than 50 = 5%
 --    Qty more than 50 = 7.5%
@@ -24,7 +24,10 @@ GO
 
 -- examine the function.
 SELECT dbo.UF_CalcDiscountForSale(2);
+SELECT dbo.UF_CalcDiscountForSale(22);
 go
+
+
 
 
 
@@ -88,8 +91,17 @@ AS
 GO
 
 
+
+
 -- We could continue to write other tests for different values and boudaries.
 -- However that's confusing and it results in a lot of tests for simple rules. 
+
+
+
+
+
+
+
 -- Let's simplify.
 CREATE PROCEDURE [tSalesOrderDetail].[test Check Discount Calculation for qty rules]
 AS
@@ -140,6 +152,37 @@ IF OBJECT_ID('dbo.UF_CalcDiscountForSale') IS NOT NULL
     DROP FUNCTION dbo.UF_CalcDiscountForSale;
 GO
 CREATE FUNCTION dbo.UF_CalcDiscountForSale ( @QtyPurchased INT )
+RETURNS NUMERIC(10 ,3)
+/*
+-- Test Code
+select dbo.UF_CalcDiscountForSale(10);
+select dbo.UF_CalcDiscountForSale(25);
+select dbo.UF_CalcDiscountForSale(125);
+*/
+AS
+    BEGIN
+        DECLARE @i NUMERIC(10,3);
+
+        SELECT  @i = CASE WHEN ( @QtyPurchased >= 100 ) THEN 0.1
+                          WHEN ( @QtyPurchased > 50 ) AND (@QtyPurchased < 100)
+                               THEN 0.075
+                          WHEN ( @QtyPurchased > 20 ) AND (@QtyPurchased < 50)
+                               THEN 0.05
+                          ELSE 0.0
+                     END
+
+        RETURN @i
+    END
+
+GO
+
+
+-- retest
+EXEC tsqlt.run '[tSalesOrderDetail].[test Check Discount Calculation for qty rules]';
+GO
+
+
+ALTER FUNCTION dbo.UF_CalcDiscountForSale ( @QtyPurchased INT )
 RETURNS NUMERIC(10 ,3)
 /*
 -- Test Code
