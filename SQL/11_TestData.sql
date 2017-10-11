@@ -1,5 +1,5 @@
 /*
-Unit Testing T-SQL - Checking Joins
+Unit Testing T-SQL - Selective Test Data loads
 
 Steve Jones, copyright 2017
 
@@ -14,20 +14,26 @@ GO
 -- We want to ensure we have a known set of test data
 -- Set a table to 1 to reload
 DECLARE
-    @SalesTax BIT = 0,
-    @SalesOrderDetail BIT = 1;
+    @SalesTax BIT = 0
+    , @SalesOrderDetail BIT = 1
+--  , @Customer bit = 0
+--  , @Supplier bit = 0
+--  , @SupplierRegion bit = 0
+--  , @SalesOrderHeader bit = 0
+;
 
 
 
 
 
-
-
+-- Check the flags to clear tables
 IF @SalesOrderDetail = 1
     TRUNCATE TABLE dbo.SalesOrderDetail;
 IF @SalesTax = 1
     TRUNCATE TABLE dbo.Salestax;
 -- ...
+
+-- check the flags to reload the table
 IF @SalesOrderDetail = 1
     INSERT INTO dbo.SalesOrderDetail
     (   SalesOrderID,

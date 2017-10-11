@@ -1,5 +1,5 @@
 /*
-Unit Testing T-SQL - Checking Joins
+Unit Testing T-SQL - Loading Test Data
 
 Steve Jones, copyright 2017
 
@@ -8,6 +8,8 @@ your environment. Please test this on your own systems. This code may not be rep
 or redistributed by anyone without permission.
 You are free to use this code inside of your own organization.
 */
+
+-- Check the existing data
 USE [TestingTSQL]
 GO
 SELECT * FROM dbo.SalesOrderDetail
@@ -15,16 +17,32 @@ SELECT * FROM dbo.Salestax
 GO
 
 
+
+
+
+
+
+
+
+
+
+
+
 -- We want to ensure we have a known set of test data
+-- Clear the system
 TRUNCATE TABLE dbo.SalesOrderDetail
 TRUNCATE TABLE dbo.Salestax
 -- ...
 GO
 /*
+-- Option one
+-- Load from flat files
 bulk insert dbo.SalesOrderDetail from 'c:\Users\way0u\Source\Repos\UnitTestingTSQL\SQL\SalesOrderDetail.txt'
 bulk insert dbo.SalesTax from 'c:\Users\way0u\Source\Repos\UnitTestingTSQL\SQL\Salestax.txt'
 
 */
+-- Option two
+-- Version control inserts
 INSERT INTO dbo.SalesOrderDetail
 ( SalesOrderID, SalesOrderDetailID, OrderQuantity, ProductID, UnitPrice, DiscountPercent, LineTotal, TaxAmount, ShippingState)
 VALUES  ( 1, 1, 10, 2, 10, 0.0, 100, 2, 'PA')
