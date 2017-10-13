@@ -103,20 +103,22 @@ GO
 
 
 -- Let's simplify.
-CREATE PROCEDURE [tSalesOrderDetail].[test Check Discount Calculation for qty rules]
+CREATE OR ALTER PROCEDURE [tSalesOrderDetail].[test Check Discount Calculation for qty rules]
 AS
     BEGIN
   -- Assemble
   CREATE table #expected (qty INT, discount NUMERIC(10 ,3));
 
+-- SQL Prompt formatting off
   INSERT #expected
           ( qty ,discount )
   VALUES  ( 19 ,0.0 )
         , ( 20 ,0.05 )
         , ( 49 ,0.05 )
-        , ( 50 ,0.075 )
+        , ( 50 ,0.05 )
         , ( 99 ,0.075 )
         , ( 100 ,0.1 )
+-- SQL Prompt formatting on
 
   SELECT TOP(0) *
    INTO #actual
@@ -164,9 +166,9 @@ AS
         DECLARE @i NUMERIC(10,3);
 
         SELECT  @i = CASE WHEN ( @QtyPurchased >= 100 ) THEN 0.1
-                          WHEN ( @QtyPurchased > 50 ) AND (@QtyPurchased < 100)
+                          WHEN ( @QtyPurchased >= 50 ) AND (@QtyPurchased < 100)
                                THEN 0.075
-                          WHEN ( @QtyPurchased > 20 ) AND (@QtyPurchased < 50)
+                          WHEN ( @QtyPurchased >= 20 ) AND (@QtyPurchased < 50)
                                THEN 0.05
                           ELSE 0.0
                      END
@@ -195,9 +197,9 @@ AS
         DECLARE @i NUMERIC(10,3);
 
         SELECT  @i = CASE WHEN ( @QtyPurchased >= 100 ) THEN 0.1
-                          WHEN ( @QtyPurchased >= 50 ) AND (@QtyPurchased < 100)
+                          WHEN ( @QtyPurchased > 50 ) AND (@QtyPurchased < 100)
                                THEN 0.075
-                          WHEN ( @QtyPurchased >= 20 ) AND (@QtyPurchased < 50)
+                          WHEN ( @QtyPurchased >= 20 ) AND (@QtyPurchased <= 50)
                                THEN 0.05
                           ELSE 0.0
                      END

@@ -15,7 +15,7 @@ BEGIN
     RETURN @productID;
 END;
 GO
-SELECT dbo.GetProductIdForSalesOrderDetail(2);
+SELECT dbo.GetCustomerSalesOrderDetail(2);
 
 
 -- We now need a test for this to ensure this works
@@ -44,7 +44,7 @@ BEGIN
     --------------------------------------------
 	----- Act
 	--------------------------------------------
-	SELECT @actual = dbo.GetProductIdForSalesOrderDetail(2)
+	SELECT @actual = dbo.GetCustomerSalesOrderDetail(2)
 
     --------------------------------------------
 	----- Assert
@@ -67,11 +67,62 @@ EXEC tsqlt.run '[tSalesOrderTests].[test the correct product returns for a valid
 
 -- We later have an issue in the application. This code is being run.
 -- It returns a NULL but we should never return a NULL
-SELECT dbo.GetProductIdForSalesOrderDetail(44);
+SELECT dbo.GetCustomerSalesOrderDetail(44);
 GO
+SELECT
+      SalesOrderID
+    , SalesOrderDetailID
+    , OrderQuantity
+    , ProductID
+    , UnitPrice
+    , DiscountPercent
+    , LineTotal
+    , TaxAmount
+    , ShippingState
+FROM  dbo.SalesOrderDetail
+WHERE SalesOrderDetailID = 44
+;
 
 -- There are programmatic ways to handle this in the function, but we should
 -- ensure that this doesn't happen in the future if the function is changed
 -- by adding a test that checks for null returns.
 -- This also documents the requirement that nulls not be returned
+
+
+-- Sample Test
+CREATE PROCEDURE [tSalesOrderTests].[test the correct product returns for an invalid salesorderid]
+AS
+BEGIN
+    --------------------------------------------
+	----- Assemble
+	--------------------------------------------
+	EXEC tsqlt.FakeTable @TableName = N'SalesOrderDetail'
+
+	INSERT dbo.SalesOrderDetail
+	(
+	    SalesOrderDetailID,
+	    ProductID
+	)
+	VALUES
+	(1, 100), (2, 200), (3, 300)
+
+    DECLARE @expected INT = 999,
+	        @actual INT
+
+    --------------------------------------------
+	----- Act
+	--------------------------------------------
+	SELECT @actual = dbo.GetCustomerSalesOrderDetail(5)
+
+    --------------------------------------------
+	----- Assert
+	--------------------------------------------
+	EXEC tsqlt.AssertEquals @Expected = @expected, -- sql_variant
+	                        @Actual = @actual,   -- sql_variant
+	                        @Message = N'Incorrect product ID returned'    -- nvarchar(max)
+
+END    
+GO
+EXEC tsqlt.run '[tSalesOrderTests].[test the correct product returns for an invalid salesorderid]';
+GO
 

@@ -733,8 +733,10 @@ AS
     BEGIN
         DECLARE @i NUMERIC(10,3);
 
-        SELECT  @i = CASE WHEN ( @QtyPurchased > 101 ) THEN 0.1
-                          WHEN ( @QtyPurchased > 20 ) AND (@QtyPurchased < 100)
+        SELECT  @i = CASE WHEN ( @QtyPurchased > 100 ) THEN 0.1
+                          WHEN ( @QtyPurchased > 50 ) AND (@QtyPurchased < 100)
+                               THEN 0.075
+                          WHEN ( @QtyPurchased > 20 ) AND (@QtyPurchased < 50)
                                THEN 0.05
                           ELSE 0.0
                      END

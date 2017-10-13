@@ -142,7 +142,7 @@ EXEC dbo.GetArticleHeadlines;
 
 -- While debugging, we realize in production, 
 -- not all content items have ratings
--- if needed: DELETE dbo.ContentPerformanceRecord WHERE ContentItemID > 5
+-- if needed: DELETE dbo.ContentPerformanceRecord WHERE ContentItemID > 3
 SELECT TOP 5
     ci.ContentItemID
   , cpr.ContentItemID
