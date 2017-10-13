@@ -74,12 +74,6 @@ CREATE TABLE [dbo].[ContentItems_Staging]
 [SourceID] [int] NULL,
 [ForumThreadID] [int] NULL,
 [UpdatesContentItemID] [int] NULL,
-[CreatedDate] [datetime] NOT NULL,
-[LastModifiedDate] [datetime] NULL,
-[DollarValue] [float] NULL,
-[IconFileID] [int] NULL,
-[DisplayStyle] [int] NOT NULL CONSTRAINT [DF_ContentItems_DisplayStyle] DEFAULT ((0)),
-[PopularityRank] [float] NOT NULL CONSTRAINT [DF__ContentIt__Popul__5F7E2DAC] DEFAULT ((0)),
 [EstimateofReadingTime] [time] NOT NULL
 )
 GO
