@@ -13,14 +13,12 @@ GO
 
 -- We want to ensure we have a known set of test data
 -- Set a table to 1 to reload
-DECLARE
-    @SalesTax BIT = 0
-    , @SalesOrderDetail BIT = 1
---  , @Customer bit = 0
---  , @Supplier bit = 0
---  , @SupplierRegion bit = 0
---  , @SalesOrderHeader bit = 0
-;
+DECLARE @SalesTax BIT         = 0,
+        @SalesOrderDetail BIT = 1,
+        @Customer BIT         = 0,
+        @Supplier BIT         = 0,
+        @SupplierRegion BIT   = 0,
+        @SalesOrderHeader BIT = 0;
 
 
 

@@ -25,6 +25,7 @@ AS
 BEGIN
   UPDATE O 
   SET
+		 -- New code
          o.TaxAmount = (o.OrderQuantity * o.UnitPrice) * dbo.CalcSalesTaxForSale(O.ShippingState,o.OrderQuantity * o.UnitPrice)
          -- old code
          -- o.TaxAmount = o.LineTotal * dbo.CalcSalesTaxForSale(O.ShippingState,O.LineTotal)
@@ -64,7 +65,9 @@ BEGIN
        @FunctionName = 'dbo.CalcSalesTaxForSale', 
        @FakeFunctionName = 'LocalTaxForOrderTests.[0.2 sales tax]';
 
-  INSERT INTO dbo.SalesOrderDetail(SalesOrderDetailID,LineTotal,ShippingState, OrderQuantity, UnitPrice)
+  INSERT INTO dbo.SalesOrderDetail(SalesOrderDetailID,LineTotal,ShippingState, 
+                                   -- Added these columns
+                                   OrderQuantity, UnitPrice)
   VALUES(42,100,'PA', 5, 20);
 
   --Act

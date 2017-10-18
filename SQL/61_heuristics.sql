@@ -197,8 +197,10 @@ AS
         DECLARE @i NUMERIC(10,3);
 
         SELECT  @i = CASE WHEN ( @QtyPurchased >= 100 ) THEN 0.1
+		                                     -- moved boundary from here
                           WHEN ( @QtyPurchased > 50 ) AND (@QtyPurchased < 100)
                                THEN 0.075
+							                                         -- to here
                           WHEN ( @QtyPurchased >= 20 ) AND (@QtyPurchased <= 50)
                                THEN 0.05
                           ELSE 0.0

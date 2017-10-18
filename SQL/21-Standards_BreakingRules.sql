@@ -28,6 +28,7 @@ GO
 EXEC tsqlt.RunTestClass @TestClassName = N'SQLCOP' -- nvarchar(max)
 GO
 
+-- Let's fix this
 EXEC sp_rename 'sp_test', 'spTest'
 
 GO
@@ -65,11 +66,11 @@ CREATE TABLE [dbo].[ContentItems_Staging]
 (
 [ContentItemID] [int] NOT NULL IDENTITY(1, 1),
 [PrimaryTagID] [int] NULL,
-[Title] [varchar] (200) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
-[ShortTitle] [varchar] (200) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[Description] [varchar] (3500) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[Text] [text] COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
-[ExternalURL] [varchar] (250) COLLATE SQL_Latin1_General_CP1_CI_AS NULL,
+[Title] [varchar] (200) NULL,
+[ShortTitle] [varchar] (200) NULL,
+[Description] [varchar] (3500) NULL,
+[Text] [text] NULL,
+[ExternalURL] [varchar] (250) NULL,
 [PublishingStatus] [int] NOT NULL,
 [SourceID] [int] NULL,
 [ForumThreadID] [int] NULL,
@@ -211,6 +212,7 @@ GO
 
 
 
+
 -- drop table [SalesHeader_Staging]
 
 
@@ -230,21 +232,6 @@ EXEC tsqlt.run '[SQLCop]';
 GO
 
 
-
-
--- fix
-EXEC sys.sp_rename
-  @objname = N'sp_test'
-, -- nvarchar(1035)
-  @newname = 'prcTest';
-GO
-
-
-
-
-
-
-
 -- test
 EXEC tsqlt.run '[SQLCop]';
 GO
@@ -254,13 +241,11 @@ GO
 
 
 
+-- bad proc
 
-
---break
-EXEC sys.sp_rename
-  @objname = N'prctest'
-, -- nvarchar(1035)
-  @newname = 'sp_Test';
+CREATE PROCEDURE sp_test
+AS
+SELECT 1    
 GO
 
 

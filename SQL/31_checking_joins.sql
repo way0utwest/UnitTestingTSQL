@@ -129,6 +129,9 @@ GO
 -- We get a bug report
 -- Some headlines don't appear.
 -- Check
+-- While debugging, we realize in production, 
+-- not all content items have ratings
+-- if needed: DELETE dbo.ContentPerformanceRecord WHERE ContentItemID > 3
 SELECT * FROM dbo.ContentItems ORDER BY ContentItemID desc
 EXEC dbo.GetArticleHeadlines;
 
@@ -140,9 +143,9 @@ EXEC dbo.GetArticleHeadlines;
 
 
 
--- While debugging, we realize in production, 
--- not all content items have ratings
--- if needed: DELETE dbo.ContentPerformanceRecord WHERE ContentItemID > 3
+
+
+-- Better check
 SELECT TOP 5
     ci.ContentItemID
   , cpr.ContentItemID

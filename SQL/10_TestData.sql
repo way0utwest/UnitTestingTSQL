@@ -51,6 +51,9 @@ VALUES  ( 1, 1, 10, 2, 10, 0.0, 100, 2, 'PA')
       , ( 2, 4, 12, 3, 10, 0.1, 108, 2.268, 'CO')
       , ( 2, 5, 5, 4, 60, 0.0, 300, 18.60, 'CA')
 GO
+
+
+
 INSERT  dbo.Salestax
         ( statecode, taxamount )
 VALUES  ( 'AK', 0.0714 ),
